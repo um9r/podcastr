@@ -30,7 +30,7 @@ import GeneratePodcast from "@/components/GeneratePodcast";
 import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
@@ -63,7 +63,6 @@ const CreatePodcast = () => {
 
   const createPodcast = useMutation(api.podcasts.createPodcast);
 
-  const { toast } = useToast();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,9 +76,7 @@ const CreatePodcast = () => {
     try {
       setIsSubmitting(true);
       if (!audioUrl || !imageUrl || !voiceType) {
-        toast({
-          title: "Please generate audio and image",
-        });
+        toast("Please generate audio and image");
         setIsSubmitting(false);
         throw new Error("Please generate audio and image");
       }
@@ -97,15 +94,12 @@ const CreatePodcast = () => {
         audioStorageId: audioStorageId!,
         imageStorageId: imageStorageId!,
       });
-      toast({ title: "Podcast created" });
+      toast("Podcast created");
       setIsSubmitting(false);
       router.push("/");
     } catch (error) {
       console.log(error);
-      toast({
-        title: "Error",
-        variant: "destructive",
-      });
+      toast("Error");
       setIsSubmitting(false);
     }
   }
