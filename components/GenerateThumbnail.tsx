@@ -7,7 +7,7 @@ import { GenerateThumbnailProps } from "@/types";
 import { Loader } from "lucide-react";
 import { Input } from "./ui/input";
 import Image from "next/image";
-import { useToast } from "./ui/use-toast";
+import { toast } from "sonner";
 import { useAction, useMutation } from "convex/react";
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
 import { api } from "@/convex/_generated/api";
@@ -23,7 +23,6 @@ const GenerateThumbnail = ({
   const [isAiThumbnail, setIsAiThumbnail] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(false);
   const imageRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const { startUpload } = useUploadFiles(generateUploadUrl);
   const getImageUrl = useMutation(api.podcasts.getUrl);
@@ -44,12 +43,10 @@ const GenerateThumbnail = ({
       const imageUrl = await getImageUrl({ storageId });
       setImage(imageUrl!);
       setIsImageLoading(false);
-      toast({
-        title: "Thumbnail generated successfully",
-      });
+      toast.success("Thumbnail generated successfully");
     } catch (error) {
       console.log(error);
-      toast({ title: "Error generating thumbnail", variant: "destructive" });
+      toast.error("Error generating thumbnail");
     }
   };
 
@@ -60,7 +57,7 @@ const GenerateThumbnail = ({
       handleImage(blob, `thumbnail-${uuidv4()}`);
     } catch (error) {
       console.log(error);
-      toast({ title: "Error generating thumbnail", variant: "destructive" });
+      toast.error("Error generating thumbnail");
     }
   };
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +72,7 @@ const GenerateThumbnail = ({
       handleImage(blob, file.name);
     } catch (error) {
       console.log(error);
-      toast({ title: "Error uploading image", variant: "destructive" });
+      toast.error("Error uploading image");
     }
   };
 
